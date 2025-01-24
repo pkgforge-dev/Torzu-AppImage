@@ -27,7 +27,7 @@ ls .
 sudo pacman --noconfirm -U *.pkg.tar.*
 cd ..
 
-git clone https://aur.archlinux.org/torzu-git.git torzu
+git clone https://aur.archlinux.org/torzu.git torzu
 cd torzu
 sed -i 's|-march=x86-64-v2|-march=x86-64-v3|' ./PKGBUILD
 cat ./PKGBUILD
