@@ -5,7 +5,6 @@ set -eu
 export APPIMAGE_EXTRACT_AND_RUN=1
 export ARCH="$(uname -m)"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
-ICON="https://github.com/dolphin-emu/dolphin/blob/master/Data/dolphin-emu.png?raw=true"
 UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 URUNTIME=$(wget -q https://api.github.com/repos/VHSgunzo/uruntime/releases -O - \
 	| sed 's/[()",{} ]/\n/g' | grep -oi "https.*appimage.*dwarfs.*$ARCH$" | head -1)
