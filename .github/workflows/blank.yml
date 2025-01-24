@@ -1,0 +1,151 @@
+name: Appimage
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  schedule:
+    - cron: "0 14 * * 0"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    container: artixlinux/artixlinux:latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: build
+      if: always()
+      run: |
+        sed -i 's/DownloadUser/#DownloadUser/g' /etc/pacman.conf
+        pacman -Syu --noconfirm base-devel strace patchelf curl wget \
+          desktop-file-utils git artix-archlinux-support llvm mesa xorg-server-xvfb \
+          vulkan-radeon vulkan-intel vulkan-nouveau pulseaudio pulseaudio-alsa pipewire
+        pacman-key --init && pacman-key --populate archlinux
+        printf "\n[extra]\nInclude = /etc/pacman.d/mirrorlist-arch\n" | tee -a /etc/pacman.conf
+        sudo pacman -Syu --noconfirm \
+          zsync \
+          catch2 \
+          enet \
+          gamemode \
+          cmake \
+          gcc13 \
+          glslang \
+          glu \
+          hidapi \
+          xcb-util-wm \
+          xcb-util-image \
+          xcb-util-renderutil \
+          libxkbcommon-x11 \
+          nasm \
+          qt5-base \
+          qt5-webengine \
+          qt5-multimedia \
+          mbedtls2 \
+          fmt \
+          nlohmann-json \
+          aom \
+          libass \
+          haskell-gnutls \
+          sdl2 \
+          libva \
+          meson \
+          ninja \
+          x264 \
+          x265 \
+          numactl \
+          libvpx \
+          libfdk-aac \
+          libopusenc \
+          ffmpeg \
+          svt-av1 \
+          dav1d \
+          boost \
+          clang \
+          vulkan-headers \
+          ffmpeg4.4 \
+          zip \
+          unzip \
+          boost-libs \
+          spirv-headers \
+          qt5ct
+
+        chmod +x ./*-appimage.sh && ./*-appimage.sh
+        mkdir dist
+        mv *.AppImage* dist/
+
+    - name: Check version file
+      run: |
+       cat ~/version
+       echo "APP_VERSION=$(cat ~/version)" >> "${GITHUB_ENV}"
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: AppImage
+        path: 'dist'
+        
+    - name: Upload version file
+      uses: actions/upload-artifact@v4.4.3
+      with:
+       name: version
+       path: ~/version
+    
+  release:
+      needs: [build]
+      permissions: write-all
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/download-artifact@v4.1.8
+          with:
+            name: AppImage
+        - uses: actions/download-artifact@v4.1.8
+          with:
+            name: version
+
+        - name: Read version
+          run: |
+            cat version
+            export VERSION="$(<version)"
+            echo "APP_VERSION=${VERSION}" >> "${GITHUB_ENV}"
+    
+        #Version Release
+        - name: Del Previous Release
+          run: |
+            gh release delete "${APP_VERSION}" --repo "${GITHUB_REPOSITORY}" --cleanup-tag  -y
+          env:
+            GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          continue-on-error: true
+        - name: Continuous Releaser
+          uses: softprops/action-gh-release@v2
+          with:
+            name: "Torzu AppImage ${{ env.APP_VERSION }}"
+            tag_name: "${{ env.APP_VERSION }}"
+            prerelease: false
+            draft: false
+            generate_release_notes: false
+            make_latest: true
+            files: |
+              *.AppImage*
+          continue-on-error: false
+
+        #Snapshot Release
+        - name: Get Date
+          run: |
+            SNAPSHOT_TAG="$(date --utc +'%Y%m%d-%H%M%S')"
+            echo SNAPSHOT_TAG="${SNAPSHOT_TAG}" >> "${GITHUB_ENV}"
+          continue-on-error: false
+        - name: Snapshot Releaser
+          uses: softprops/action-gh-release@v2
+          with:
+            name: "Snapshot ${{ env.APP_VERSION }}"
+            tag_name: "${{ env.SNAPSHOT_TAG }}"
+            prerelease: false
+            draft: false
+            generate_release_notes: false
+            make_latest: false
+            files: |
+              *.AppImage*
+          continue-on-error: false
