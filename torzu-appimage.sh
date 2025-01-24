@@ -29,7 +29,7 @@ cd ..
 
 git clone https://aur.archlinux.org/torzu-git.git torzu
 cd torzu
-sed -i 's|-march=x86-64-v2|-march=x86-64-v3|' ./PKGBUILD
+sed -i 's|-march=x86-64-v2|-march=x86-64|' ./PKGBUILD
 cat ./PKGBUILD
 makepkg
 sudo pacman --noconfirm -U *.pkg.tar.*
