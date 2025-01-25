@@ -24,6 +24,8 @@ cd ./torzu
 
 if [ "$1" = 'v3' ]; then
 	sed -i 's/-march=[^"]*/-march=x86-64-v3/' ./PKGBUILD
+	sudo sed -i 's/-march=x86-64 /-march=x86-64-v3 /' /etc/makepkg.conf # Do I need to do this as well?
+	cat /etc/makepkg.conf
 else
 	sed -i 's/-march=[^"]*/-march=x86-64/' ./PKGBUILD
 fi
