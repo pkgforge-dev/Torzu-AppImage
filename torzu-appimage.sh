@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eu
+set -e
 
 export APPIMAGE_EXTRACT_AND_RUN=1
 export ARCH="$(uname -m)"
@@ -10,7 +10,7 @@ URUNTIME=$(wget -q https://api.github.com/repos/VHSgunzo/uruntime/releases -O - 
 ICON="https://notabug.org/litucks/torzu/raw/02cfee3f184e6fdcc3b483ef399fb5d2bb1e8ec7/dist/yuzu.png"
 ICON_BACKUP="https://free-git.org/Emulator-Archive/torzu/raw/branch/master/dist/yuzu.png"
 
-if [ "$1" = 'v3' ];then
+if [ "$1" = 'v3' ]; then
 	echo "Making x86-64-v3 build of torzu"
 	ARCH="${ARCH}_v3"
 fi
@@ -22,7 +22,7 @@ if [ ! -d ./torzu ]; then
 fi
 cd ./torzu
 
-if [ "$1" = 'v3' ];then
+if [ "$1" = 'v3' ]; then
 	sed 's/-march=[^"]*/-march=x86-64-v3/' ./PKGBUILD
 else
 	sed 's/-march=[^"]*/-march=x86-64/' ./PKGBUILD
