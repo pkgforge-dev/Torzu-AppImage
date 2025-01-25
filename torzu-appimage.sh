@@ -23,9 +23,9 @@ fi
 cd ./torzu
 
 if [ "$1" = 'v3' ]; then
-	sed 's/-march=[^"]*/-march=x86-64-v3/' ./PKGBUILD
+	sed -i 's/-march=[^"]*/-march=x86-64-v3/' ./PKGBUILD
 else
-	sed 's/-march=[^"]*/-march=x86-64/' ./PKGBUILD
+	sed -i 's/-march=[^"]*/-march=x86-64/' ./PKGBUILD
 fi
 cat ./PKGBUILD
 
