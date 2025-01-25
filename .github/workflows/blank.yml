@@ -74,6 +74,14 @@ jobs:
     - name: Install vasm
       run: |
         echo "Making vasm dependency"
+
+        sudo sed -i 's|EUID == 0|EUID == 69|g' /usr/bin/makepkg
+        mkdir -p /usr/local/bin
+        cp /usr/bin/makepkg /usr/local/bin
+        
+        sudo sed -i 's|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
+        cat /etc/makepkg.conf
+
         git clone https://aur.archlinux.org/vasm vasm
         ( cd vasm
           makepkg
