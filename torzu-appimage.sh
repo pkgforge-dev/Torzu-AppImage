@@ -30,7 +30,7 @@ fi
 sed -i 's/-DYUZU_USE_EXTERNAL_VULKAN_SPIRV_TOOLS=OFF/-DYUZU_USE_EXTERNAL_VULKAN_SPIRV_TOOLS=ON/' ./PKGBUILD
 cat ./PKGBUILD
 
-makepkg
+makepkg -f
 sudo pacman --noconfirm -U *.pkg.tar.*
 ls .
 export VERSION="$(awk -F'=' '/pkgver=/{print $2; exit}' ./PKGBUILD)"
