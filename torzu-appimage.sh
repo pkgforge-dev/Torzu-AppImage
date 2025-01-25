@@ -17,13 +17,6 @@ fi
 UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 
 # BUILD TORZU
-sudo sed -i 's|EUID == 0|EUID == 69|g' /usr/bin/makepkg
-mkdir -p /usr/local/bin
-cp /usr/bin/makepkg /usr/local/bin
-
-sudo sed -i 's|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
-cat /etc/makepkg.conf
-
 if [ ! -d ./torzu ]; then
 	git clone https://aur.archlinux.org/torzu-git.git torzu
 fi
