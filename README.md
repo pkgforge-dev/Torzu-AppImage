@@ -1,5 +1,9 @@
 # Torzu-AppImage
 
+This repository makes builds for **x86_64** (generic) and **x86_64_v3**. If your CPU is less than 10 years old use the x86_64_v3 build since it has a significant performance boost.
+
+---------------------------------------------------------------
+
 AppImage made using [sharun](https://github.com/VHSgunzo/sharun), which makes it extremely easy to turn any binary into a portable package without using containers or similar tricks.
 
 **This AppImage bundles everything and should work on any linux distro, even on musl based ones.**
