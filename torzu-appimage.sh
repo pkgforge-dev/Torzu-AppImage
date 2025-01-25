@@ -5,18 +5,21 @@ set -eu
 export APPIMAGE_EXTRACT_AND_RUN=1
 export ARCH="$(uname -m)"
 LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
-UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 URUNTIME=$(wget -q https://api.github.com/repos/VHSgunzo/uruntime/releases -O - \
 	| sed 's/[()",{} ]/\n/g' | grep -oi "https.*appimage.*dwarfs.*$ARCH$" | head -1)
 ICON="https://notabug.org/litucks/torzu/raw/02cfee3f184e6fdcc3b483ef399fb5d2bb1e8ec7/dist/yuzu.png"
 ICON_BACKUP="https://free-git.org/Emulator-Archive/torzu/raw/branch/master/dist/yuzu.png"
+
+if [ "$1" = 'v3' ];then
+	ARCH="${ARCH}_v3"
+fi
+UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 
 # BUILD TORZU
 sudo sed -i 's|EUID == 0|EUID == 69|g' /usr/bin/makepkg
 mkdir -p /usr/local/bin
 cp /usr/bin/makepkg /usr/local/bin
 
-cat /etc/makepkg.conf
 sudo sed -i 's|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
 cat /etc/makepkg.conf
 
@@ -29,8 +32,14 @@ cd ..
 
 git clone https://aur.archlinux.org/torzu-git.git torzu
 cd torzu
-sed -i 's|-march=x86-64-v2|-march=x86-64|' ./PKGBUILD
+
+if [ "$1" = 'v3' ];then
+	sed -i 's|-march=.*|-march=x86-64-v3|' ./PKGBUILD
+else
+	sed -i 's|-march=.*|-march=x86-64|' ./PKGBUILD
+fi
 cat ./PKGBUILD
+
 makepkg
 sudo pacman --noconfirm -U *.pkg.tar.*
 ls .
