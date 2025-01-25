@@ -68,7 +68,6 @@ jobs:
           zip \
           unzip \
           boost-libs \
-          spirv-headers \
           qt5ct
 
     - name: Install vasm
