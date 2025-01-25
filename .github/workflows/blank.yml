@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: build
+    - name: Install dependencies
       if: always()
       run: |
         sed -i 's/DownloadUser/#DownloadUser/g' /etc/pacman.conf
@@ -71,7 +71,27 @@ jobs:
           spirv-headers \
           qt5ct
 
+    - name: Install vasm
+      run: |
+        echo "Making vasm dependency"
+        git clone https://aur.archlinux.org/vasm vasm
+        ( cd vasm
+          makepkg
+          ls .
+          sudo pacman --noconfirm -U *.pkg.tar.*
+        )
+
+    - name: Compile Torzu
+      run: |
         chmod +x ./*-appimage.sh && ./*-appimage.sh
+        mkdir dist
+        mv *.AppImage* dist/
+
+    - name: Compile Torzu Optimized
+      run: |
+        rm -rf ./AppDir
+        sudo pacman -R --noconfirm torzu
+        chmod +x ./*-appimage.sh && ./*-appimage.sh v3
         mkdir dist
         mv *.AppImage* dist/
 
