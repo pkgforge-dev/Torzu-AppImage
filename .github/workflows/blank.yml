@@ -78,7 +78,7 @@ jobs:
         mkdir -p /usr/local/bin
         cp /usr/bin/makepkg /usr/local/bin
         
-        sudo sed -i 's|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
+        sudo sed -i 's|-O2|-O3|; s|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
         cat /etc/makepkg.conf
 
         git clone https://aur.archlinux.org/vasm vasm
