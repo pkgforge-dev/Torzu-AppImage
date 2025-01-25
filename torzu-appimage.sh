@@ -11,6 +11,7 @@ ICON="https://notabug.org/litucks/torzu/raw/02cfee3f184e6fdcc3b483ef399fb5d2bb1e
 ICON_BACKUP="https://free-git.org/Emulator-Archive/torzu/raw/branch/master/dist/yuzu.png"
 
 if [ "$1" = 'v3' ];then
+	echo "Making x86-64-v3 build of torzu"
 	ARCH="${ARCH}_v3"
 fi
 UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
@@ -23,20 +24,15 @@ cp /usr/bin/makepkg /usr/local/bin
 sudo sed -i 's|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
 cat /etc/makepkg.conf
 
-git clone https://aur.archlinux.org/vasm vasm
-cd vasm
-makepkg
-ls .
-sudo pacman --noconfirm -U *.pkg.tar.*
-cd ..
-
-git clone https://aur.archlinux.org/torzu-git.git torzu
-cd torzu
+if [ ! -d ./torzu ]; then
+	git clone https://aur.archlinux.org/torzu-git.git torzu
+fi
+cd ./torzu
 
 if [ "$1" = 'v3' ];then
-	sed -i 's|-march=.*|-march=x86-64-v3|' ./PKGBUILD
+	sed 's/-march=[^"]*/-march=x86-64-v3/' ./PKGBUILD
 else
-	sed -i 's|-march=.*|-march=x86-64|' ./PKGBUILD
+	sed 's/-march=[^"]*/-march=x86-64/' ./PKGBUILD
 fi
 cat ./PKGBUILD
 
