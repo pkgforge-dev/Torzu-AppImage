@@ -71,7 +71,7 @@ ln -s ./torzu.png ./.DirIcon
 # Bundle all libs
 wget --retry-connrefused --tries=30 "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
-xvfb-run -a -- ./lib4bin -p -v -r -e -s -k \
+xvfb-run -a -- ./lib4bin -p -v -e -s -k \
 	/usr/bin/yuzu* \
 	/usr/lib/libGLX* \
 	/usr/lib/libEGL* \
