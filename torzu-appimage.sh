@@ -77,16 +77,16 @@ xvfb-run -a -- ./lib4bin -p -v -r -e -s -k \
 	/usr/lib/libEGL* \
 	/usr/lib/dri/* \
 	/usr/lib/libvulkan* \
-	/usr/lib/qt5/plugins/audio/* \
-	/usr/lib/qt5/plugins/bearer/* \
-	/usr/lib/qt5/plugins/imageformats/* \
-	/usr/lib/qt5/plugins/iconengines/* \
-	/usr/lib/qt5/plugins/platforms/* \
-	/usr/lib/qt5/plugins/platformthemes/* \
-	/usr/lib/qt5/plugins/platforminputcontexts/* \
-	/usr/lib/qt5/plugins/styles/* \
-	/usr/lib/qt5/plugins/xcbglintegrations/* \
-	/usr/lib/qt5/plugins/wayland-*/* \
+	/usr/lib/qt/plugins/audio/* \
+	/usr/lib/qt/plugins/bearer/* \
+	/usr/lib/qt/plugins/imageformats/* \
+	/usr/lib/qt/plugins/iconengines/* \
+	/usr/lib/qt/plugins/platforms/* \
+	/usr/lib/qt/plugins/platformthemes/* \
+	/usr/lib/qt/plugins/platforminputcontexts/* \
+	/usr/lib/qt/plugins/styles/* \
+	/usr/lib/qt/plugins/xcbglintegrations/* \
+	/usr/lib/qt/plugins/wayland-*/* \
 	/usr/lib/pulseaudio/* \
 	/usr/lib/alsa-lib/*
 
