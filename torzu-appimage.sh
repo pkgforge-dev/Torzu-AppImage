@@ -90,18 +90,6 @@ xvfb-run -a -- ./lib4bin -p -v -r -e -s -k \
 	/usr/lib/pulseaudio/* \
 	/usr/lib/alsa-lib/*
 
-
-#########################################################################
-# For some wierd reason the yuzu binary is ignoring the --library-path given to the interpreter by sharun
-# IT SOMEHOW EVEN USES THE HOST INTERPRETER!
-
-# This is crazy that this is needed
-patchelf --set-interpreter './lib/ld-linux-x86-64.so.2' ./shared/bin/*
-echo 'SHARUN_WORKING_DIR=${SHARUN_DIR}' > ./.env
-echo 'LD_LIBRARY_PATH=${SHARUN_DIR}/lib:${SHARUN_DIR}/lib/pulseaudio:${SHARUN_DIR}/lib/libproxy:${SHARUN_DIR}/lib/alsa-lib:${SHARUN_DIR}/lib/dri' >> ./.env
-
-#########################################################################
-
 # Prepare sharun
 ln ./sharun ./AppRun
 ./sharun -g
