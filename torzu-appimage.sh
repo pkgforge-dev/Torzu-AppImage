@@ -71,7 +71,7 @@ ln -s ./torzu.png ./.DirIcon
 # Bundle all libs
 wget --retry-connrefused --tries=30 "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
-xvfb-run -a -- ./lib4bin -p -v -r -e -s -k \
+xvfb-run -a -- ./lib4bin -p -v -e -s -k \
 	/usr/bin/yuzu* \
 	/usr/lib/libGLX* \
 	/usr/lib/libEGL* \
@@ -89,18 +89,6 @@ xvfb-run -a -- ./lib4bin -p -v -r -e -s -k \
 	/usr/lib/qt/plugins/wayland-*/* \
 	/usr/lib/pulseaudio/* \
 	/usr/lib/alsa-lib/*
-
-
-#########################################################################
-# For some wierd reason the yuzu binary is ignoring the --library-path given to the interpreter by sharun
-# IT SOMEHOW EVEN USES THE HOST INTERPRETER!
-
-# This is crazy that this is needed
-patchelf --set-interpreter './lib/ld-linux-x86-64.so.2' ./shared/bin/*
-echo 'SHARUN_WORKING_DIR=${SHARUN_DIR}' > ./.env
-echo 'LD_LIBRARY_PATH=${SHARUN_DIR}/lib:${SHARUN_DIR}/lib/pulseaudio:${SHARUN_DIR}/lib/libproxy:${SHARUN_DIR}/lib/alsa-lib:${SHARUN_DIR}/lib/dri' >> ./.env
-
-#########################################################################
 
 # Prepare sharun
 ln ./sharun ./AppRun
@@ -122,7 +110,7 @@ echo "Generating AppImage..."
 ./uruntime --appimage-mkdwarfs -f \
 	--set-owner 0 --set-group 0 \
 	--no-history --no-create-timestamp \
-	--compression zstd:level=22 -S24 -B16 \
+	--compression zstd:level=22 -S23 -B16 \
 	--header uruntime \
 	-i ./AppDir -o Torzu-"$VERSION"-anylinux-"$ARCH".AppImage
 
