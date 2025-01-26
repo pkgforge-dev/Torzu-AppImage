@@ -42,6 +42,7 @@ jobs:
           qt5-base \
           qt5-webengine \
           qt5-multimedia \
+          qt5-wayland \
           mbedtls2 \
           fmt \
           nlohmann-json \
