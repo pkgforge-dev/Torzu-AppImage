@@ -38,6 +38,7 @@ jobs:
           xcb-util-image \
           xcb-util-renderutil \
           libxkbcommon-x11 \
+          libxi \
           nasm \
           qt5-base \
           qt5-webengine \
