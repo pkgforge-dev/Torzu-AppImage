@@ -58,7 +58,7 @@ Exec=yuzu %f
 Categories=Game;Emulator;Qt;
 MimeType=application/x-nx-nro;application/x-nx-nso;application/x-nx-nsp;application/x-nx-xci;
 Keywords=Nintendo;Switch;
-StartupWMClass=torzu' > ./torzu.desktop
+StartupWMClass=yuzu' > ./torzu.desktop
 
 if ! wget --retry-connrefused --tries=30 "$ICON" -O torzu.png; then
 	if ! wget --retry-connrefused --tries=30 "$ICON_BACKUP" -O torzu.png; then
