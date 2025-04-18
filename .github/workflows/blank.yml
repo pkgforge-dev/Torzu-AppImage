@@ -27,8 +27,6 @@ jobs:
 
     - name: Compile Torzu Optimized
       run: |
-        rm -rf ./AppDir
-        sudo pacman -R --noconfirm torzu-git
         chmod +x ./*-appimage.sh && ./*-appimage.sh v3
         mkdir -p dist
         mv *.AppImage* dist/
