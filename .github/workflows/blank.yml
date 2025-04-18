@@ -10,93 +10,15 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-    container: artixlinux/artixlinux:latest
+    runs-on: ubuntu-latest
+    container: ghcr.io/pkgforge-dev/archlinux:latest
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install dependencies
+    - name: Get dependencies
       if: always()
-      run: |
-        sed -i 's/DownloadUser/#DownloadUser/g' /etc/pacman.conf
-        pacman -Syu --noconfirm base-devel strace patchelf curl wget \
-          desktop-file-utils git artix-archlinux-support mesa xorg-server-xvfb \
-          vulkan-radeon vulkan-intel vulkan-nouveau pulseaudio pulseaudio-alsa pipewire
-        pacman-key --init && pacman-key --populate archlinux
-        printf "\n[extra]\nInclude = /etc/pacman.d/mirrorlist-arch\n" | tee -a /etc/pacman.conf
-        sudo pacman -Syu --noconfirm \
-          zsync \
-          catch2 \
-          enet \
-          gamemode \
-          cmake \
-          gcc13 \
-          glslang \
-          glu \
-          hidapi \
-          xcb-util-wm \
-          xcb-util-image \
-          xcb-util-renderutil \
-          libxkbcommon-x11 \
-          libxss \
-          libxi \
-          nasm \
-          qt5-base \
-          qt5-webengine \
-          qt5-multimedia \
-          qt5-wayland \
-          mbedtls2 \
-          fmt \
-          nlohmann-json \
-          aom \
-          libass \
-          haskell-gnutls \
-          sdl2 \
-          libva \
-          meson \
-          ninja \
-          x264 \
-          x265 \
-          numactl \
-          libvpx \
-          libfdk-aac \
-          libopusenc \
-          ffmpeg \
-          svt-av1 \
-          dav1d \
-          boost \
-          clang \
-          vulkan-headers \
-          ffmpeg4.4 \
-          zip \
-          unzip \
-          boost-libs \
-          qt5ct
-
-    - name: Install vasm
-      run: |
-        echo "Making vasm dependency"
-
-        sudo sed -i 's|EUID == 0|EUID == 69|g' /usr/bin/makepkg
-        mkdir -p /usr/local/bin
-        cp /usr/bin/makepkg /usr/local/bin
-        
-        sudo sed -i 's|-O2|-O3|; s|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
-        cat /etc/makepkg.conf
-
-        git clone https://aur.archlinux.org/vasm vasm
-        ( cd vasm
-          makepkg
-          ls .
-          sudo pacman --noconfirm -U *.pkg.tar.*
-        )
-
-    - name: Install debloated llvm-libs
-      run: |
-        LLVM="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/llvm-libs-nano-x86_64.pkg.tar.zst"
-        wget "$LLVM" -O ./llvm-libs.pkg.tar.zst
-        pacman -U --noconfirm ./llvm-libs.pkg.tar.zst
-
+      run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
+          
     - name: Compile Torzu
       run: |
         chmod +x ./*-appimage.sh && ./*-appimage.sh
