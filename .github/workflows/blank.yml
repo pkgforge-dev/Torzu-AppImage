@@ -19,11 +19,11 @@ jobs:
       if: always()
       run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
           
-    - name: Compile Torzu
-      run: |
-        chmod +x ./*-appimage.sh && ./*-appimage.sh
-        mkdir -p dist
-        mv *.AppImage* dist/
+#    - name: Compile Torzu
+#      run: |
+#        chmod +x ./*-appimage.sh && ./*-appimage.sh
+#        mkdir -p dist
+#        mv *.AppImage* dist/
 
     - name: Compile Torzu Optimized
       run: |
