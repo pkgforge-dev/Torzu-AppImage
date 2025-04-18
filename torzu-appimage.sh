@@ -79,6 +79,7 @@ xvfb-run -a -- ./lib4bin -p -v -e -s -k \
 	/usr/lib/vdpau/* \
 	/usr/lib/libvulkan* \
 	/usr/lib/libXss.so* \
+	/usr/lib/libXi.so* \
 	/usr/lib/libdecor-0.so* \
 	/usr/lib/libgamemode.so* \
 	/usr/lib/qt/plugins/audio/* \
