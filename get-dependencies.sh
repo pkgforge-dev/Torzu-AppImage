@@ -66,6 +66,8 @@ pacman -Syu --noconfirm \
 	strace \
 	unzip \
 	vulkan-headers \
+	vulkan-nouveau \
+	vulkan-radeon \
 	wget \
 	x264 \
 	x265 \
