@@ -76,7 +76,11 @@ xvfb-run -a -- ./lib4bin -p -v -e -s -k \
 	/usr/lib/libGL.so* \
 	/usr/lib/libEGL* \
 	/usr/lib/dri/* \
+	/usr/lib/vdpau/* \
 	/usr/lib/libvulkan* \
+	/usr/lib/libXss.so* \
+	/usr/lib/libdecor-0.so* \
+	/usr/lib/libgamemode.so* \
 	/usr/lib/qt/plugins/audio/* \
 	/usr/lib/qt/plugins/bearer/* \
 	/usr/lib/qt/plugins/imageformats/* \
@@ -88,6 +92,8 @@ xvfb-run -a -- ./lib4bin -p -v -e -s -k \
 	/usr/lib/qt/plugins/xcbglintegrations/* \
 	/usr/lib/qt/plugins/wayland-*/* \
 	/usr/lib/pulseaudio/* \
+	/usr/lib/pipewire-0.3/* \
+	/usr/lib/spa-0.2/*/* \
 	/usr/lib/alsa-lib/*
 
 # Prepare sharun
