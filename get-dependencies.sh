@@ -38,6 +38,7 @@ pacman -Syu --noconfirm \
 	haskell-gnutls \
 	hidapi \
 	libass \
+	libdecor \
 	libfdk-aac \
 	libopusenc \
 	libva \
