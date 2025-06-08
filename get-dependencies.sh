@@ -60,6 +60,7 @@ pacman -Syu --noconfirm \
 	qt5-base \
 	qt5ct \
 	qt5-multimedia \
+	qt5-tools \
 	qt5-wayland \
 	qt5-webengine \
 	sdl2 \
