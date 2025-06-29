@@ -51,35 +51,34 @@ cp -v /usr/share/applications/*torzu*.desktop
 cp -v /usr/share/icons/hicolor/scalable/apps/*torzu*.svg ./
 cp -v /usr/share/icons/hicolor/scalable/apps/*torzu*.svg ./.DirIcon
 
-# Bundle all libs
-wget --retry-connrefused --tries=30 "$LIB4BN" -O ./lib4bin
-chmod +x ./lib4bin
-xvfb-run -a -- ./lib4bin -p -v -e -s -k \
-	/usr/bin/yuzu \
-	/usr/lib/lib*GL*.so \
-	/usr/lib/dri/* \
-	/usr/lib/vdpau/* \
-	/usr/lib/libvulkan* \
-	/usr/lib/libXss.so* \
-	/usr/lib/libxcb-cursor.so* \
-	/usr/lib/libXrandr.so* \
-	/usr/lib/libXi.so* \
-	/usr/lib/libdecor-0.so* \
-	/usr/lib/libgamemode.so* \
-	/usr/lib/qt/plugins/audio/* \
-	/usr/lib/qt/plugins/bearer/* \
-	/usr/lib/qt/plugins/imageformats/* \
-	/usr/lib/qt/plugins/iconengines/* \
-	/usr/lib/qt/plugins/platforms/* \
-	/usr/lib/qt/plugins/platformthemes/* \
-	/usr/lib/qt/plugins/platforminputcontexts/* \
-	/usr/lib/qt/plugins/styles/* \
+# ADD LIBRARIES
+wget --retry-connrefused --tries=30 "$SHARUN" -O ./sharun-aio
+chmod +x ./sharun-aio
+xvfb-run -a ./sharun-aio l -p -v -e -s -k \
+	/usr/bin/yuzu                           \
+	/usr/lib/lib*GL*                        \
+	/usr/lib/dri/*                          \
+	/usr/lib/vdpau/*                        \
+	/usr/lib/libvulkan*                     \
+	/usr/lib/libXss.so*                     \
+	/usr/lib/libxcb-cursor.so*              \
+	/usr/lib/libXrandr.so*                  \
+	/usr/lib/libXi.so*                      \
+	/usr/lib/libdecor-0.so*                 \
+	/usr/lib/libgamemode.so*                \
+	/usr/lib/qt/plugins/audio/*             \
+	/usr/lib/qt/plugins/bearer/*            \
+	/usr/lib/qt/plugins/imageformats/*      \
+	/usr/lib/qt/plugins/iconengines/*       \
+	/usr/lib/qt/plugins/platform*/*         \
+	/usr/lib/qt/plugins/styles/*            \
 	/usr/lib/qt/plugins/xcbglintegrations/* \
-	/usr/lib/qt/plugins/wayland-*/* \
-	/usr/lib/pulseaudio/* \
-	/usr/lib/pipewire-0.3/* \
-	/usr/lib/spa-0.2/*/* \
+	/usr/lib/qt/plugins/wayland-*/*         \
+	/usr/lib/pulseaudio/*                   \
+	/usr/lib/pipewire-0.3/*                 \
+	/usr/lib/spa-0.2/*/*                    \
 	/usr/lib/alsa-lib/*
+rm -f ./sharun-aio
 
 # Prepare sharun
 ln ./sharun ./AppRun
