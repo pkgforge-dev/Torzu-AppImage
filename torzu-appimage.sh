@@ -10,13 +10,13 @@ URUNTIME_LITE="https://github.com/VHSgunzo/uruntime/releases/latest/download/uru
 if [ "$1" = 'v3' ] && [ "$ARCH" = 'x86_64' ]; then
 	echo "Making x86-64-v3 optimized build of torzu..."
 	ARCH="${ARCH}_v3"
-	ARCH_FLAGS="-march=x86-64-v3 -O3 -flto=thin -DNDEBUG"
+	ARCH_FLAGS="-march=x86-64-v3 -O3 -flto=auto -DNDEBUG"
 elif [ "$ARCH" = 'x86_64' ]; then
 	echo "Making x86-64 generic build of torzu..."
-	ARCH_FLAGS="-march=x86-64 -mtune=generic -O3 -flto=thin -DNDEBUG"
+	ARCH_FLAGS="-march=x86-64 -mtune=generic -O3 -flto=auto -DNDEBUG"
 else
 	echo "Making aarch64 build of torzu..."
-	ARCH_FLAGS="-march=armv8-a -mtune=generic -O3 -flto=thin -DNDEBUG"
+	ARCH_FLAGS="-march=armv8-a -mtune=generic -O3 -flto=auto -DNDEBUG"
 fi
 
 UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
