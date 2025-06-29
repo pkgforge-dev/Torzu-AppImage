@@ -22,10 +22,10 @@ jobs:
             name: "Build AppImage (Optimized)"
             optimized: true
             arch: x86_64
-#          - runs-on: ubuntu-24.04-arm
-#            name: "Build AppImage"
-#            optimized: false
-#            arch: aarch64
+          - runs-on: ubuntu-24.04-arm
+            name: "Build AppImage"
+            optimized: false
+            arch: aarch64
     container: ghcr.io/pkgforge-dev/archlinux:latest
     steps:
       - uses: actions/checkout@v4
