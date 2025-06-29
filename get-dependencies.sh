@@ -32,7 +32,7 @@ pacman -Syu --noconfirm \
 	fmt \
 	gamemode \
 	git \
-	gcc13 \
+	gcc14 \
 	glslang \
 	glu \
 	haskell-gnutls \
