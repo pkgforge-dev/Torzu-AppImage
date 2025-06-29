@@ -7,7 +7,7 @@ SHARUN="https://github.com/VHSgunzo/sharun/releases/latest/download/sharun-$ARCH
 URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
 URUNTIME_LITE="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-lite-$ARCH"
 
-if [ "$1" = 'v3' ]; then
+if [ "$ARCH" = 'x86_64' ]; then
 	echo "Making x86-64-v3 build of torzu"
 	ARCH="${ARCH}_v3"
 fi
