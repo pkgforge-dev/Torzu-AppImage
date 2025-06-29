@@ -29,6 +29,7 @@ git clone --recursive --depth 1 https://notabug.org/litucks/torzu.git ./torzu &&
 	cmake .. -GNinja \
 		-DYUZU_USE_BUNDLED_VCPKG=OFF               \
 		-DENABLE_QT6=ON                            \
+		-DENABLE_QT_TRANSLATION=ON                 \
 		-DYUZU_USE_BUNDLED_QT=OFF                  \
 		-DYUZU_USE_BUNDLED_FFMPEG=OFF              \
 		-DYUZU_TESTS=OFF                           \
