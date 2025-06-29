@@ -12,7 +12,7 @@ fi
 
 LLVM_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/llvm-libs-nano-$PKG_TYPE"
 FFMPEG_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/ffmpeg-mini-$PKG_TYPE"
-#QT6_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/qt6-base-iculess-$PKG_TYPE" # Hopefulyl torzu updates to Qt6 someday
+QT6_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/qt6-base-iculess-$PKG_TYPE"
 LIBXML_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/libxml2-iculess-$PKG_TYPE"
 OPUS_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/opus-nano-$PKG_TYPE"
 
@@ -24,7 +24,6 @@ pacman -Syu --noconfirm \
 	catch2 \
 	clang \
 	cmake \
-	curl \
 	dav1d \
 	enet \
 	ffmpeg \
@@ -32,7 +31,7 @@ pacman -Syu --noconfirm \
 	fmt \
 	gamemode \
 	git \
-	gcc14 \
+	gcc \
 	glslang \
 	glu \
 	haskell-gnutls \
@@ -53,19 +52,16 @@ pacman -Syu --noconfirm \
 	ninja \
 	nlohmann-json \
 	numactl \
-	patchelf \
 	pipewire-audio \
 	pulseaudio \
 	pulseaudio-alsa \
-	qt5-base \
-	qt5ct \
-	qt5-multimedia \
-	qt5-tools \
-	qt5-wayland \
-	qt5-webengine \
+	qt6-base \
+	qt6ct \
+	qt6-multimedia \
+	qt6-tools \
+	qt6-wayland \
 	sdl2 \
 	svt-av1 \
-	strace \
 	unzip \
 	vulkan-headers \
 	vulkan-nouveau \
@@ -89,7 +85,7 @@ fi
 echo "Installing debloated pckages..."
 echo "---------------------------------------------------------------"
 wget --retry-connrefused --tries=30 "$LLVM_URL" -O ./llvm-libs.pkg.tar.zst
-#wget --retry-connrefused --tries=30 "$QT6_URL" -O ./qt6-base-iculess.pkg.tar.zst
+wget --retry-connrefused --tries=30 "$QT6_URL" -O ./qt6-base-iculess.pkg.tar.zst
 wget --retry-connrefused --tries=30 "$LIBXML_URL" -O ./libxml2-iculess.pkg.tar.zst
 wget --retry-connrefused --tries=30 "$FFMPEG_URL" -O ./ffmpeg-mini.pkg.tar.zst
 wget --retry-connrefused --tries=30 "$OPUS_URL" -O ./opus-nano.pkg.tar.zst
@@ -108,11 +104,11 @@ cp /usr/bin/makepkg /usr/local/bin
 sed -i 's|-O2|-O3|; s|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
 cat /etc/makepkg.conf
 
-git clone https://aur.archlinux.org/vasm vasm
-( cd vasm
-  makepkg -f
-  ls -la .
-  pacman --noconfirm -U *.pkg.tar.*
+git clone https://aur.archlinux.org/vasm ./vasm && ( 
+	cd ./vasm
+	makepkg -f
+	ls -la .
+	pacman --noconfirm -U *.pkg.tar.*
 )
 
 echo "All done!"
