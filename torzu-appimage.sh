@@ -95,13 +95,16 @@ echo "Adding update information \"$UPINFO\" to runtime..."
 ./uruntime-lite --appimage-addupdinfo "$UPINFO"
 
 echo "Generating AppImage..."
-./uruntime --appimage-mkdwarfs -f \
-	--set-owner 0 --set-group 0 \
-	--no-history --no-create-timestamp \
+./uruntime \
+	-i ./AppDir                          \
+	--appimage-mkdwarfs -f               \
+	--set-owner 0 --set-group 0          \
+	--no-history --no-create-timestamp   \
 	--compression zstd:level=22 -S26 -B8 \
-	--header uruntime-lite \
-	-i ./AppDir -o ./Torzu-"$VERSION"-anylinux-"$ARCH".AppImage
+	--header uruntime-lite               \
+	-o ./Torzu-"$VERSION"-anylinux-"$ARCH".AppImage
 
 echo "Generating zsync file..."
 zsyncmake ./*.AppImage -u ./*.AppImage
+
 echo "All Done!"
