@@ -24,6 +24,7 @@ pacman -Syu --noconfirm \
 	catch2 \
 	clang \
 	cmake \
+	curl \
 	dav1d \
 	enet \
 	ffmpeg \
