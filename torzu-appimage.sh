@@ -56,7 +56,7 @@ VERSION="$(cat ~/version)"
 mkdir ./AppDir
 cd ./AppDir
 
-cp -v /usr/share/applications/*torzu*.desktop
+cp -v /usr/share/applications/*torzu*.desktop            ./
 cp -v /usr/share/icons/hicolor/scalable/apps/*torzu*.svg ./
 cp -v /usr/share/icons/hicolor/scalable/apps/*torzu*.svg ./.DirIcon
 
