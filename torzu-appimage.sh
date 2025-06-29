@@ -1,11 +1,11 @@
 #!/bin/sh
 
-set -e
+set -ex
 
-export APPIMAGE_EXTRACT_AND_RUN=1
-export ARCH="$(uname -m)"
-LIB4BN="https://raw.githubusercontent.com/VHSgunzo/sharun/refs/heads/main/lib4bin"
+ARCH="$(uname -m)"
+SHARUN="https://github.com/VHSgunzo/sharun/releases/latest/download/sharun-$ARCH-aio"
 URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
+URUNTIME_LITE="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-lite-$ARCH"
 ICON="https://notabug.org/litucks/torzu/raw/02cfee3f184e6fdcc3b483ef399fb5d2bb1e8ec7/dist/yuzu.png"
 ICON_BACKUP="https://free-git.org/Emulator-Archive/torzu/raw/branch/master/dist/yuzu.png"
 
@@ -16,67 +16,49 @@ fi
 UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 
 # BUILD TORZU
-if [ ! -d ./torzu ]; then
-	git clone https://aur.archlinux.org/torzu-git.git torzu
-fi
-cd ./torzu
+git clone https://aur.archlinux.org/torzu-git.git torzu && (
+	cd ./torzu
+	if [ "$1" = 'v3' ]; then
+		sed -i 's/-march=[^"]*/-march=x86-64-v3/' ./PKGBUILD
+		sed -i 's/-march=x86-64 /-march=x86-64-v3 /' /etc/makepkg.conf # Do I need to do this as well?
+		cat /etc/makepkg.conf
+	else
+		sed -i 's/-march=[^"]*/-march=x86-64/' ./PKGBUILD
+	fi
 
-if [ "$1" = 'v3' ]; then
-	sed -i 's/-march=[^"]*/-march=x86-64-v3/' ./PKGBUILD
-	sudo sed -i 's/-march=x86-64 /-march=x86-64-v3 /' /etc/makepkg.conf # Do I need to do this as well?
-	cat /etc/makepkg.conf
-else
-	sed -i 's/-march=[^"]*/-march=x86-64/' ./PKGBUILD
-fi
-sed -i 's/-DYUZU_USE_EXTERNAL_VULKAN_SPIRV_TOOLS=OFF/-DYUZU_USE_EXTERNAL_VULKAN_SPIRV_TOOLS=ON/' ./PKGBUILD
-if ! grep -q -- '-O3' ./PKGBUILD; then
-	sed -i 's/-march=/-O3 -march=/' ./PKGBUILD
-fi
-cat ./PKGBUILD
+	# Fix weird bug with vulkan
+	sed -i 's/-DYUZU_USE_EXTERNAL_VULKAN_SPIRV_TOOLS=OFF/-DYUZU_USE_EXTERNAL_VULKAN_SPIRV_TOOLS=ON/' ./PKGBUILD
 
-makepkg -f
-sudo pacman --noconfirm -U *.pkg.tar.*
-ls .
-export VERSION="$(awk -F'=' '/pkgver=/{print $2; exit}' ./PKGBUILD)"
-echo "$VERSION" > ~/version
-cd ..
+	# Force translatiosn to be built
+	sed -i 's|TRANSLATION=OFF|TRANSLATION=ON|g' ./PKGBUILD
+
+	if ! grep -q -- '-O3' ./PKGBUILD; then
+		sed -i 's/-march=/-O3 -march=/' ./PKGBUILD
+	fi
+	
+	cat ./PKGBUILD
+	
+	makepkg -f
+	pacman --noconfirm -U ./*.pkg.tar.*
+	ls .
+	VERSION="$(awk -F'=' '/pkgver=/{print $2; exit}' ./PKGBUILD)"
+	echo "$VERSION" > ~/version
+)
 
 # NOW MAKE APPIMAGE
 mkdir ./AppDir
 cd ./AppDir
 
-echo '[Desktop Entry]
-Version=1.0
-Type=Application
-Name=torzu
-GenericName=Switch Emulator
-Comment=Nintendo Switch video game console emulator
-Icon=torzu
-TryExec=yuzu
-Exec=yuzu %f
-Categories=Game;Emulator;Qt;
-MimeType=application/x-nx-nro;application/x-nx-nso;application/x-nx-nsp;application/x-nx-xci;
-Keywords=Nintendo;Switch;
-StartupWMClass=yuzu' > ./torzu.desktop
-
-if ! wget --retry-connrefused --tries=30 "$ICON" -O torzu.png; then
-	if ! wget --retry-connrefused --tries=30 "$ICON_BACKUP" -O torzu.png; then
-		echo "kek"
-		touch ./torzu.png
-	fi
-fi
-ln -s ./torzu.png ./.DirIcon
+cp -v /usr/share/applications/*torzu*.desktop
+cp -v /usr/share/icons/hicolor/scalable/apps/*torzu*.svg ./
+cp -v /usr/share/icons/hicolor/scalable/apps/*torzu*.svg ./.DirIcon
 
 # Bundle all libs
 wget --retry-connrefused --tries=30 "$LIB4BN" -O ./lib4bin
 chmod +x ./lib4bin
 xvfb-run -a -- ./lib4bin -p -v -e -s -k \
-	/usr/bin/yuzu* \
-	/usr/lib/libGLX* \
-	/usr/lib/libGL.so* \
-	/usr/lib/libEGL* \
-	/usr/lib/libdl.so* \
-	/usr/lib/librt.so* \
+	/usr/bin/yuzu \
+	/usr/lib/lib*GL*.so \
 	/usr/lib/dri/* \
 	/usr/lib/vdpau/* \
 	/usr/lib/libvulkan* \
@@ -107,21 +89,22 @@ ln ./sharun ./AppRun
 
 # turn appdir into appimage
 cd ..
-wget -q "$URUNTIME" -O ./uruntime
-chmod +x ./uruntime
+wget --retry-connrefused --tries=30 "$URUNTIME"      -O  ./uruntime
+wget --retry-connrefused --tries=30 "$URUNTIME_LITE" -O  ./uruntime-lite
+chmod +x ./uruntime*
 
-#Add udpate info to runtime
+# Add udpate info to runtime
 echo "Adding update information \"$UPINFO\" to runtime..."
-./uruntime --appimage-addupdinfo "$UPINFO"
+./uruntime-lite --appimage-addupdinfo "$UPINFO"
 
 echo "Generating AppImage..."
 ./uruntime --appimage-mkdwarfs -f \
 	--set-owner 0 --set-group 0 \
 	--no-history --no-create-timestamp \
 	--compression zstd:level=22 -S26 -B8 \
-	--header uruntime \
-	-i ./AppDir -o Torzu-"$VERSION"-anylinux-"$ARCH".AppImage
+	--header uruntime-lite \
+	-i ./AppDir -o ./Torzu-"$VERSION"-anylinux-"$ARCH".AppImage
 
 echo "Generating zsync file..."
-zsyncmake *.AppImage -u *.AppImage
+zsyncmake ./*.AppImage -u ./*.AppImage
 echo "All Done!"
