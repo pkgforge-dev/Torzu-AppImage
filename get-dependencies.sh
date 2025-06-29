@@ -94,23 +94,5 @@ wget --retry-connrefused --tries=30 "$OPUS_URL" -O ./opus-nano.pkg.tar.zst
 pacman -U --noconfirm ./*.pkg.tar.zst
 rm -f ./*.pkg.tar.zst
 
-
-echo "Making vasm dependency..."
-echo "---------------------------------------------------------------"
-
-sed -i 's|EUID == 0|EUID == 69|g' /usr/bin/makepkg
-mkdir -p /usr/local/bin
-cp /usr/bin/makepkg /usr/local/bin
-
-sed -i 's|-O2|-O3|; s|MAKEFLAGS=.*|MAKEFLAGS="-j$(nproc)"|; s|#MAKEFLAGS|MAKEFLAGS|' /etc/makepkg.conf
-cat /etc/makepkg.conf
-
-git clone https://aur.archlinux.org/vasm ./vasm && ( 
-	cd ./vasm
-	makepkg -f
-	ls -la .
-	pacman --noconfirm -U *.pkg.tar.*
-)
-
 echo "All done!"
 echo "---------------------------------------------------------------"
