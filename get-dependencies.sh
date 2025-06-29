@@ -22,7 +22,6 @@ pacman -Syu --noconfirm \
 	gcc                 \
 	glslang             \
 	glu                 \
-	haskell-gnutls      \
 	hidapi              \
 	libass              \
 	libdecor            \
@@ -49,7 +48,6 @@ pacman -Syu --noconfirm \
 	qt6-tools           \
 	qt6-wayland         \
 	sdl2                \
-	svt-av1             \
 	unzip               \
 	vulkan-headers      \
 	vulkan-nouveau      \
