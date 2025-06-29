@@ -5,12 +5,21 @@ concurrency:
 
 on:
   schedule:
-    - cron: "0 10 * * 0"
+    - cron: "0 16 1/14 * *"
   workflow_dispatch:
-
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: "${{ matrix.name }} (${{ matrix.arch }})"
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      matrix:
+        include:
+          - runs-on: ubuntu-latest
+            name: "Build AppImage"
+            arch: x86_64
+          - runs-on: ubuntu-24.04-arm
+            name: "Build AppImage"
+            arch: aarch64
     container: ghcr.io/pkgforge-dev/archlinux:latest
     steps:
     - uses: actions/checkout@v4
@@ -18,36 +27,32 @@ jobs:
     - name: Get dependencies
       if: always()
       run: chmod +x ./get-dependencies.sh && ./get-dependencies.sh
-          
-#    - name: Compile Torzu
-#      run: |
-#        chmod +x ./*-appimage.sh && ./*-appimage.sh
-#        mkdir -p dist
-#        mv *.AppImage* dist/
 
-    - name: Compile Torzu Optimized
+    - name: Make AppImage
       run: |
-        chmod +x ./*-appimage.sh && ./*-appimage.sh v3
-        mkdir -p dist
+        chmod +x ./*-appimage.sh 
+        ./*-appimage.sh
+        mkdir dist
         mv *.AppImage* dist/
 
     - name: Check version file
       run: |
        cat ~/version
        echo "APP_VERSION=$(cat ~/version)" >> "${GITHUB_ENV}"
-    
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4.6.2
       with:
-        name: AppImage
+        name: AppImage-${{ matrix.arch }}
         path: 'dist'
-        
+
     - name: Upload version file
       uses: actions/upload-artifact@v4.6.2
       with:
        name: version
        path: ~/version
-    
+       overwrite: true
+
   release:
       needs: [build]
       permissions: write-all
@@ -56,7 +61,12 @@ jobs:
       steps:
         - uses: actions/download-artifact@v4.3.0
           with:
-            name: AppImage
+            name: AppImage-x86_64
+
+        - uses: actions/download-artifact@v4.3.0
+          with:
+            name: AppImage-aarch64
+
         - uses: actions/download-artifact@v4.3.0
           with:
             name: version
@@ -66,7 +76,7 @@ jobs:
             cat version
             export VERSION="$(<version)"
             echo "APP_VERSION=${VERSION}" >> "${GITHUB_ENV}"
-    
+
         #Version Release
         - name: Del Previous Release
           run: |
