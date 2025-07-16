@@ -1,6 +1,11 @@
-# Torzu-AppImage
+# Torzu-AppImage 🐧
 
-This repository makes builds for **x86_64** (generic) and **x86_64_v3**. If your CPU is less than 10 years old use the x86_64_v3 build since it has a significant performance boost.
+This repository makes builds for **aarch64**, **x86_64** (generic) and **x86_64_v3**. If your CPU is less than 10 years old use the x86_64_v3 build since it has a significant performance boost.
+
+[![GitHub Downloads](https://img.shields.io/github/downloads/pkgforge-dev/Torzu-AppImage/total?logo=github&label=GitHub%20Downloads)](https://github.com/pkgforge-dev/Torzu-AppImage/releases/latest)
+[![CI Build Status](https://github.com//pkgforge-dev/Torzu-AppImage/actions/workflows/blank.yml/badge.svg)](https://github.com/pkgforge-dev/Torzu-AppImage/releases/latest)
+
+* [Latest Stable Release](https://github.com/pkgforge-dev/Torzu-AppImage/releases/latest)
 
 ---
 
