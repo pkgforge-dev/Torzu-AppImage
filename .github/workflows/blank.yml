@@ -99,7 +99,7 @@ jobs:
       - name: Read version and Get date
         run: |
           echo "VERSION=$(cat version)" >> "${GITHUB_ENV}"
-          echo "DATE=$(date +'%Y-%m-%d_%s')" >> "$GITHUB_ENV"
+          echo "DATE=$(date +'%Y-%m-%d_%s')" >> "${GITHUB_ENV}"
 
       - name: Release Artifacts
         uses: softprops/action-gh-release@v2.2.2
@@ -109,7 +109,16 @@ jobs:
           prerelease: false
           draft: false
           generate_release_notes: false
-          fail_on_unmatched_files: false
           make_latest: true
           files: |
             *.AppImage*
+
+      - uses: actions/checkout@v4
+      - name: Update LATEST_VERSION
+        run: |
+          echo "${{ env.VERSION }}" > ./LATEST_VERSION
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ./LATEST_VERSION
+          git commit --allow-empty -m 'bump `LATEST_VERSION` [skip ci]'
+          git push
