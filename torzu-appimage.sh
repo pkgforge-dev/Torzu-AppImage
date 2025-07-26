@@ -94,9 +94,6 @@ rm -f ./sharun-aio
 ln ./sharun ./AppRun
 ./sharun -g
 
-# Make intel hardware accel work
-echo 'LIBVA_DRIVERS_PATH=${SHARUN_DIR}/shared/lib:${SHARUN_DIR}/shared/lib/dri' >> ./.env
-
 # turn appdir into appimage
 cd ..
 wget --retry-connrefused --tries=30 "$URUNTIME"      -O  ./uruntime
