@@ -7,6 +7,12 @@ This repository makes builds for **aarch64**, **x86_64** (generic) and **x86_64_
 
 * [Latest Stable Release](https://github.com/pkgforge-dev/Torzu-AppImage/releases/latest)
 
+# READ THIS IF YOU HAVE ISSUES
+
+If you are on wayland (specially GNOME wayland) and get freezes or crahes you are likely affected by this issue that affects all Qt6 apps: https://github.com/pkgforge-dev/Citron-AppImage/issues/50
+
+To fix it simply set the env variable `QT_QPA_PLATFORM=xcb`
+
 ---
 
 AppImage made using [sharun](https://github.com/VHSgunzo/sharun), which makes it extremely easy to turn any binary into a portable package without using containers or similar tricks.
