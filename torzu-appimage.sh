@@ -3,9 +3,6 @@
 set -ex
 
 ARCH="$(uname -m)"
-SHARUN="https://github.com/VHSgunzo/sharun/releases/latest/download/sharun-$ARCH-aio"
-URUNTIME="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-$ARCH"
-URUNTIME_LITE="https://github.com/VHSgunzo/uruntime/releases/latest/download/uruntime-appimage-dwarfs-lite-$ARCH"
 
 if [ "$1" = 'v3' ] && [ "$ARCH" = 'x86_64' ]; then
 	echo "Making x86-64-v3 optimized build of torzu..."
@@ -18,8 +15,6 @@ else
 	echo "Making aarch64 build of torzu..."
 	ARCH_FLAGS="-march=armv8-a -mtune=generic -O3 -flto=auto -DNDEBUG"
 fi
-
-UPINFO="gh-releases-zsync|$(echo "$GITHUB_REPOSITORY" | tr '/' '|')|latest|*$ARCH.AppImage.zsync"
 
 # BUILD TORZU
 git clone --recursive --depth 1 https://notabug.org/litucks/torzu.git ./torzu && (
@@ -54,67 +49,29 @@ git clone --recursive --depth 1 https://notabug.org/litucks/torzu.git ./torzu &&
 VERSION="$(cat ~/version)"
 
 # NOW MAKE APPIMAGE
-mkdir ./AppDir
-cd ./AppDir
+SHARUN="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/quick-sharun.sh"
+URUNTIME="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/uruntime2appimage.sh"
 
-cp -v /usr/share/applications/*torzu*.desktop            ./
-cp -v /usr/share/icons/hicolor/scalable/apps/*torzu*.svg ./
-cp -v /usr/share/icons/hicolor/scalable/apps/*torzu*.svg ./.DirIcon
+export ADD_HOOKS="self-updater.bg.hook"
+export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
+export OUTNAME=Torzu-"$VERSION"-anylinux-"$ARCH".AppImage
+export DESKTOP=/usr/share/applications/onion.torzu_emu.torzu.desktop
+export ICON=/usr/share/icons/hicolor/scalable/apps/onion.torzu_emu.torzu.svg
+export DEPLOY_OPENGL=1 
+export DEPLOY_VULKAN=1 
+export DEPLOY_PIPEWIRE=1
 
 # ADD LIBRARIES
-wget --retry-connrefused --tries=30 "$SHARUN" -O ./sharun-aio
-chmod +x ./sharun-aio
-xvfb-run -a ./sharun-aio l -p -v -e -s -k \
-	/usr/bin/yuzu                            \
-	/usr/lib/lib*GL*                         \
-	/usr/lib/dri/*                           \
-	/usr/lib/vdpau/*                         \
-	/usr/lib/libvulkan*                      \
-	/usr/lib/libXss.so*                      \
-	/usr/lib/libxcb-cursor.so*               \
-	/usr/lib/libXrandr.so*                   \
-	/usr/lib/libXi.so*                       \
-	/usr/lib/libdecor-0.so*                  \
-	/usr/lib/libgamemode.so*                 \
-	/usr/lib/qt6/plugins/audio/*             \
-	/usr/lib/qt6/plugins/bearer/*            \
-	/usr/lib/qt6/plugins/imageformats/*      \
-	/usr/lib/qt6/plugins/iconengines/*       \
-	/usr/lib/qt6/plugins/platform*/*         \
-	/usr/lib/qt6/plugins/styles/*            \
-	/usr/lib/qt6/plugins/xcbglintegrations/* \
-	/usr/lib/qt6/plugins/wayland-*/*         \
-	/usr/lib/pulseaudio/*                    \
-	/usr/lib/pipewire-0.3/*                  \
-	/usr/lib/spa-0.2/*/*                     \
-	/usr/lib/alsa-lib/*
-rm -f ./sharun-aio
+wget --retry-connrefused --tries=30 "$SHARUN" -O ./quick-sharun
+chmod +x ./quick-sharun
+./quick-sharun /usr/bin/yuzu* /usr/lib/libgamemode.so*
 
-# Prepare sharun
-ln ./sharun ./AppRun
-./sharun -g
+# allow using host vk for aarch64 given the sad situation
+if [ "$ARCH" = 'aarch64' ]; then 
+	echo 'SHARUN_ALLOW_SYS_VKICD=1' >> ./AppDir/.env
+fi
 
-# turn appdir into appimage
-cd ..
-wget --retry-connrefused --tries=30 "$URUNTIME"      -O  ./uruntime
-wget --retry-connrefused --tries=30 "$URUNTIME_LITE" -O  ./uruntime-lite
-chmod +x ./uruntime*
-
-# Add udpate info to runtime
-echo "Adding update information \"$UPINFO\" to runtime..."
-./uruntime-lite --appimage-addupdinfo "$UPINFO"
-
-echo "Generating AppImage..."
-./uruntime \
-	--appimage-mkdwarfs -f               \
-	--set-owner 0 --set-group 0          \
-	--no-history --no-create-timestamp   \
-	--compression zstd:level=22 -S26 -B8 \
-	--header uruntime-lite               \
-	-i ./AppDir                          \
-	-o ./Torzu-"$VERSION"-anylinux-"$ARCH".AppImage
-
-echo "Generating zsync file..."
-zsyncmake ./*.AppImage -u ./*.AppImage
-
-echo "All Done!"
+# MAKE APPIMAGE WITH URUNTIME
+wget --retry-connrefused --tries=30 "$URUNTIME" -O ./uruntime2appimage
+chmod +x ./uruntime2appimage
+./uruntime2appimage
