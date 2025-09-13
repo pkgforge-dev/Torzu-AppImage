@@ -1,7 +1,7 @@
 #!/bin/sh
 
-set -ex
-ARCH="$(uname -m)"
+set -eux
+EXTRA_PACKAGES="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/get-debloated-pkgs.sh"
 
 pacman -Syu --noconfirm \
 	aom                 \
@@ -12,10 +12,7 @@ pacman -Syu --noconfirm \
 	clang               \
 	cmake               \
 	curl                \
-	dav1d               \
 	enet                \
-	ffmpeg              \
-	ffmpeg4.4           \
 	fmt                 \
 	gamemode            \
 	git                 \
@@ -24,16 +21,10 @@ pacman -Syu --noconfirm \
 	glu                 \
 	hidapi              \
 	libass              \
-	libdecor            \
-	libfdk-aac          \
-	libopusenc          \
-	libva               \
-	libvpx              \
 	libxi               \
 	libxkbcommon-x11    \
 	libxss              \
 	mbedtls2            \
-	mesa                \
 	meson               \
 	nasm                \
 	ninja               \
@@ -50,11 +41,7 @@ pacman -Syu --noconfirm \
 	sdl2                \
 	unzip               \
 	vulkan-headers      \
-	vulkan-nouveau      \
-	vulkan-radeon       \
 	wget                \
-	x264                \
-	x265                \
 	xcb-util-image      \
 	xcb-util-renderutil \
 	xcb-util-wm         \
@@ -62,38 +49,8 @@ pacman -Syu --noconfirm \
 	zip                 \
 	zsync
 
-
-case "$ARCH" in
-	'x86_64')
-		PKG_TYPE='x86_64.pkg.tar.zst'
-		pacman -Syu --noconfirm vulkan-intel intel-media-driver haskell-gnutls svt-av1
-		;;
-	'aarch64')
-		PKG_TYPE='aarch64.pkg.tar.xz'
-		pacman -Syu --noconfirm vulkan-freedreno vulkan-panfrost
-		;;
-	''|*)
-		echo "Unknown cpu arch: $ARCH"
-		exit 1
-		;;
-esac
-
-LLVM_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/llvm-libs-nano-$PKG_TYPE"
-FFMPEG_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/ffmpeg-mini-$PKG_TYPE"
-QT6_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/qt6-base-iculess-$PKG_TYPE"
-LIBXML_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/libxml2-iculess-$PKG_TYPE"
-OPUS_URL="https://github.com/pkgforge-dev/llvm-libs-debloated/releases/download/continuous/opus-nano-$PKG_TYPE"
-
-echo "Installing debloated pckages..."
+echo "Installing debloated packages..."
 echo "---------------------------------------------------------------"
-wget --retry-connrefused --tries=30 "$LLVM_URL"   -O ./llvm-libs.pkg.tar.zst
-wget --retry-connrefused --tries=30 "$QT6_URL"    -O ./qt6-base-iculess.pkg.tar.zst
-wget --retry-connrefused --tries=30 "$LIBXML_URL" -O ./libxml2-iculess.pkg.tar.zst
-wget --retry-connrefused --tries=30 "$FFMPEG_URL" -O ./ffmpeg-mini.pkg.tar.zst
-wget --retry-connrefused --tries=30 "$OPUS_URL"   -O ./opus-nano.pkg.tar.zst
-
-pacman -U --noconfirm ./*.pkg.tar.zst
-rm -f ./*.pkg.tar.zst
-
-echo "All done!"
-echo "---------------------------------------------------------------"
+wget --retry-connrefused --tries=30 "$EXTRA_PACKAGES" -O ./get-debloated-pkgs.sh
+chmod +x ./get-debloated-pkgs.sh
+./get-debloated-pkgs.sh --add-mesa qt6-base-mini llvm-libs-nano opus-mini libxml2-mini
