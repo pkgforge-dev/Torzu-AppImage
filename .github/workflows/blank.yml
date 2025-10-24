@@ -53,7 +53,7 @@ jobs:
           mv *.AppImage* dist/
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: AppImage-${{ matrix.optimized && 'optimized' || 'normal' }}-${{ matrix.arch }}
           path: "dist"
@@ -65,7 +65,7 @@ jobs:
           echo "APP_VERSION=$(cat ~/version)" >> "${GITHUB_ENV}"
 
       - name: Upload version file
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: version
           path: ~/version
